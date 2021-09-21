@@ -1,0 +1,28 @@
+{% extends "./../../first_app/base.html" %}
+
+{% block header %}            
+    <p style="text-align: center;">
+        Order information: 
+    </p>        
+{% endblock header %}
+
+{% block content %}
+
+    Order id : {{ order.id }} <hr>
+    Date created : {{ order.created }} <hr>
+    total order cost : ${{ order.get_total_cost|floatformat:"2"}} 
+    {% if order.coupon %}
+         (with discount)
+    {% endif %}
+    <hr>
+    paid : {{ order.paid }} <hr>
+
+    Order items : <hr>
+    {% for order_item in order_items %}
+        Product : {{ order_item.product.title }} <br>
+        price : ${{ order_item.price }} <br>
+        quantity : {{ order_item.quantity }} <br>
+        total product cost : ${{ order_item.get_cost }} <br>
+    {% endfor %}
+
+{% endblock content %}

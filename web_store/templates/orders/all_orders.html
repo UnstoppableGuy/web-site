@@ -1,0 +1,20 @@
+{% extends "./../first_app/base.html" %}
+
+{% block header %}            
+    <p style="text-align: center;">
+        Your orders : 
+    </p>        
+{% endblock header %}
+
+{% block content %}
+
+    {% for order in orders %}
+        <div>
+            <a href="{% url 'orders:order_specific' order.id %}">
+                Order_id: {{ order.id }}
+            </a>
+        </div>
+        <hr>
+    {% endfor %}
+
+{% endblock content %}

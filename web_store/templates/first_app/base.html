@@ -1,0 +1,314 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--<link rel="stylesheet" href="{% static "css/styles.css" %}" />-->
+    <!--<script src="{% static 'js/time_my.js' %}"></script>    -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>{% block title %}Default title:){% endblock title %}</title>    
+</head>
+
+<body style="display:flex; flex-direction:column; min-height: 100%">
+
+    <style>        
+        .message {
+            /*position:fixed;
+            display:block;*/
+            position: absolute;
+            z-index: 1000;            
+            font-size: 25px;            
+            right: 5%;
+            min-width: 200px;
+            height: 50px; 
+            
+            margin-left: 50%;
+            color: #333;            
+            font-weight: bold;
+            font-family: Verdana, sans-serif;            
+
+            border: 1px solid;            
+        }
+        .error {                               
+            color: #D8000C;
+            background-color: #FFBABA;            
+        }
+        .success {                     
+            color: #4F8A10;
+            background-color: #DFF2BF;            
+        }        
+        html, body {
+            height: 100%;
+        }        
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        .content {
+            flex: 1 0 auto;                           
+        }
+        .footer {
+            flex-shrink: 0;
+        }
+        .fade-out-siblings {
+            border: 1px solid white;
+        }
+        .fade-out-siblings:hover > *:hover {
+            transform: rotate(-2deg);                                                
+            /*background-color: rgb(210, 246, 255);*/
+            box-shadow: 0 0 1px 3px rgb(177, 163, 255);
+        }   
+        .fade-out-siblings:hover {
+            border: 1px dotted #999;
+        }      
+        .header_element {
+            border: 3px dotted cornsilk;            
+            text-align: center;            
+            min-width: 100px;
+            font-size: medium;
+            font-family: cursive;
+        }
+        .header_element:hover {
+            background-color: rgb(255, 255, 255);
+            border: 3px dotted black;            
+        }                 
+        .hello_user:hover {
+            text-decoration: underline;                         
+        }
+        .precontent_stuff {
+            margin-bottom: 20px;
+            padding-top: 1px;
+            border-bottom: 5px dotted blue;
+        }
+        .my_main_content {
+            flex: 1;
+            margin-bottom: 25px;
+            background-color: rgb(255, 255, 255);
+            border: 3px;
+            border-radius: 2px;
+        }        
+        .my_for_links {
+            color:rgb(255, 104, 104);
+            text-decoration: underline;
+            text-decoration-color: azure;
+        }
+        .cart_header {            
+            text-decoration: none;
+            color: rgb(0, 165, 27);
+        }
+        .cart_header:hover {
+            text-decoration: underline;            
+        }
+    </style>        
+
+    <script>
+        if (!sessionStorage.getItem('startTime')) {
+            sessionStorage.setItem('startTime', Date.now());
+          }
+          
+          const enterTime = sessionStorage.getItem('startTime')
+          
+          
+          const showPopup = () => {
+
+            let currentTime = Date.now()
+            let spentTime = (currentTime - enterTime) / 1000
+            let message = `Вы провели на сайте минут: ${Math.floor(spentTime / 60)}, секунд: ${Math.floor(spentTime % 60)}`;
+            document.getElementById('current_date_time_block').innerHTML = message;          
+      
+          }
+          
+          const timer = setInterval(showPopup, 100)                
+    </script>
+
+    <div class="content">
+        <header style="display: block; height:100px">
+            <div style="background-color: cornsilk;">
+                <nav class="navbar navbar-expand-md navbar-light">
+                    <a class="navbar-brand">My web-site !</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav mr-auto">                        
+                            <div class="header_element">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/categories">Categories</a>
+                                </li>
+                            </div>
+                            <div class="header_element">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/products">Products</a>
+                                </li>
+                            </div>
+                        </ul>
+                        <ul class="navbar-nav mr-auto">
+                            <div class="header_element">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin">Login (admin)</a>
+                                </li>                        
+                            </div>
+                            {% if user.is_authenticated %}    
+                            <div class="header_element">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'recommendations:recommendations' %}">Recommendations (HOT!)</a>
+                                </li>                        
+                            </div>                            
+                            {% endif %}
+                        </ul>
+                        <ul class="navbar-nav">
+                            {% if user.is_authenticated %}    
+                                <div class="hello_user">
+                                    <li class="nav-item" style="font-family: cursive; font-size:medium; text-align:center; padding-top:2px">
+                                        <a class="nav-link" href="{% url 'user_profile_url' %}">Hello {{ user.username }}! ({{ user.wallet.get_balance }})</a>
+                                    </li>                            
+                                </div>
+                            {% endif %}
+                            <!-- Cart stuff here -->
+                            {% with total_items=cart|length %}                             
+                                    <li class="nav-item" style="font-family: cursive; font-size:medium; text-align:center; padding-top:2px;">
+                                        <a class="nav-link" href="{% url 'cart:cart_detail' %}">
+                                            <div class="cart_header">
+                                                {% if total_items > 0 %}
+                                                    Your cart: {{ total_items }} item{{ total_items|pluralize }},
+                                                     ${{ cart.get_total_price }} 
+                                                {% else %}
+                                                     Your cart is empty.
+                                                {% endif %}
+                                            </div>
+                                        </a>
+                                    </li>                                                                                                
+                            {% endwith %}
+                            {% if not user.is_authenticated %}
+                                <div class="header_element">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{% url 'register_url' %}">Registration</a>
+                                    </li>
+                                </div>
+                                <div class="header_element">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{% url 'login_url' %}">Log-in</a>
+                                    </li>
+                                </div>
+                            {% endif %}
+                            {% if user.is_authenticated %}    
+                                <div class="header_element">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{% url 'logout_url' %}">Logout</a>
+                                    </li>                         
+                                </div>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </header>
+ 
+        <!-- Сообщения разные -->
+        {% if messages %}            
+            {% for message in messages %}                
+            <div class="message">
+                <div class="{{ message.tags }}">                    
+                    {{ message|safe }}
+                </div>
+                <button type="button" id="button--close-button">Kek</button>
+            </div>
+            {% endfor %}            
+        {% endif %}
+                
+        <h1> 
+            <div id="current_date_time_block" class="nav-item" style="height: 20px; width: 200px; font-size: 16px"></div>
+            {% block header %}            
+            {% endblock header %}
+        </h1>    
+
+        <div class="container">
+            <div class="main-body">
+
+                <!-- PRE-PRODUCT CONTENT -->
+                <div class="precontent_stuff">
+                    {% block pre-content %}        
+                    {% endblock %}
+                </div>
+
+                <!-- MAIN CONTENT -->     
+                <div class="my_main_content">
+                    {% block content %}
+                    {% endblock content %}        
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Our Futter -->
+    <div class="footer">
+    <section class="">
+        <!-- Footer -->
+        <footer class="bg-secondary text-white text-center">
+          <!-- Grid container -->
+          <div class="container p-4">
+            <!--Grid row-->
+            <div class="row">
+              <!--Grid column-->
+              <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                <h5 class="text-uppercase">Footer Content</h5>
+      
+                <p>
+                    Web-site built for university, using 
+                    <a href="https://getbootstrap.com/" class="my_for_links">Bootstrap</a> 
+                    and <a href="https://www.djangoproject.com/" class="my_for_links">
+                    Django</a> by <a href="https://github.com/Miuroku" class="my_for_links">@Miuroku</a>.
+                </p>
+              </div>
+              <!--Grid column-->
+      
+              <!--Grid column-->
+              <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                <h5 class="text-uppercase">Links:</h5>
+      
+                <ul class="list-unstyled mb-0">
+                  <li>
+                    <a href="/about_us" class="text-white">~ About us</a>
+                  </li>
+                  <li>
+                    <a href="#" class="text-white">~ Link 2</a>
+                  </li>
+                </ul>
+              </div>
+              <!--Grid column-->
+      
+              <!--Grid column-->
+              <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                <h5 class="text-uppercase mb-0">Contacts:</h5>
+      
+                <ul class="list-unstyled">
+                  <li>
+                    <a href="https://github.com/Miuroku" class="text-white">@ Github</a>
+                  </li>
+                  <li>
+                    Email: thebestguy1101001@gmail.com
+                  </li>
+                </ul>
+              </div>
+              <!--Grid column-->
+            </div>
+            <!--Grid row-->
+          </div>
+          <!-- Grid container -->
+      
+          <!-- Copyright -->
+          <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2021 Copyright:
+            <a class="text-white" href="https://github.com/Miuroku">Mine:)</a>
+          </div>
+          <!-- Copyright -->
+        </footer>
+        <!-- Footer -->
+    </section>
+    </div>
+
+</body>
+</html>

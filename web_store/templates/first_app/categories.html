@@ -1,0 +1,46 @@
+{% extends "./base.html" %}
+
+    {% block pre-content %}    
+        <span class="text-center">            
+            <h4 class="dealing-with-specificity text-primary">
+                Какая-то инфа перед категориями.
+            </h4>    
+            <p>
+                Вот есть у нас такие вот категории <br>
+                Их можно тут добавлять и тд, далее при нажатии на категорию можно будет <br>
+                можно будет посмотреть соответствующий данной категории список товаров. вот.
+            </p>            
+        </span>        
+    {% endblock %}
+    
+    {% block content %}             
+    
+        <!-- PRODUCT CONTENT -->
+        <h4 class="text-center">Product categories : </h4>
+        <div class="album py-5 text-center">
+            <div class="container">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">                
+
+                    <!-- Out all our objects -->                    
+                    {% for el in categories %}
+                    <!-- Тут генерирую параметры URL запроса для перехода к нужным товарам -->                    
+                    <a class="btn" href={{ el.get_valid_url_for_products }}>
+                        <div class="fade-out-siblings">
+                            <div class="col">
+                                <div class="card shadow-sm">                                                                                    
+
+                                    <img src={{ el.image.url }} class="img-fluid" style="filter: blur(3px); width: auto; height: 200px;">
+                                    <h3>{{el.title}}</h3>                                                                                    
+
+                                </div>
+                            </div>   
+                        </div>
+                    </a>                        
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>   
+    
+
+    {% endblock %}

@@ -1,0 +1,56 @@
+{% extends "./base.html" %}
+{% load static %}
+
+    {% block pre-content %}
+        <span class="text-center">
+            <div class="bd-callout bd-callout-info">
+                <h4 class="dealing-with-specificity text-primary">
+                    Какая-то инфа магазина.
+                </h4>    
+                <p>
+                    Например скидки, акции, и вообще любой текст <br>
+                    У нас в магазине лучшие товары :)
+                </p>
+            </div>
+        </span>
+    {% endblock %}
+    
+    {% block content %}             
+
+        <!-- PRODUCT CONTENT -->
+        <h4 class="text-center">Products : </h4>
+        <div class="album py-5 text-center">
+            <div class="container">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">                
+
+                    <!-- Out all our objects -->                    
+                    {% for el in products %}            
+                    <!-- Было "<a class="btn" href= el.get_absolute_url >" <-- Разницы нет -->        
+                    <a class="btn" href="{% url 'specific_product_url_with_slug' el.slug %}">
+                        <div class="fade-out-siblings">
+                            <div class="col">
+                                <div class="card shadow-sm">                                                                
+                                    <img src={{ el.image.url }} class="img-fluid" width="100%" height="100%">                                
+                                    <div class="card-body">
+                                        <h4 class="card-text">{{ el.title }}</h4>
+
+                                        <p class="card-text">Price : {{ el.get_string_price }}</p>
+
+                                        <p class="card-text">{{ el.description }}</p>    
+                                        {% if el.amount == 0 %}
+                                            <p class="p-3 mb-2 bg-danger text-white">
+                                                Нет в наличии !
+                                            </p>                                    
+                                        {% endif %}
+                                    </div>                                
+                                </div>
+                            </div>
+                        </div>
+                    </a>            
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>                
+
+    {% endblock %}

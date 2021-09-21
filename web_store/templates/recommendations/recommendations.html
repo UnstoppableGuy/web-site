@@ -1,0 +1,64 @@
+{% extends "./../first_app/base.html" %}
+
+{% block header %}            
+    <p style="text-align: center;">
+        Your product recommendations : 
+    </p>        
+{% endblock header %}
+
+<!--% block content %
+
+    {% for pred in pe %}
+    <div>        
+        <a href="#">
+            Prediction: {{ pred.prediction }} <br>
+            User_i: {{ pred.i_user }} <br>
+            j_product: {{ pred.j_product }}
+        </a>
+    </div>
+    <hr>
+    {% endfor %}
+
+% endblock content % -->
+
+{% block content %}             
+
+        <!-- PRODUCT CONTENT -->
+        <h4 class="text-center">Products : </h4>
+        <div class="album py-5 text-center">
+            <div class="container">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">                
+
+                    <!-- Out all our objects -->                    
+                    {% for el in products %}            
+                    <!-- Было "<a class="btn" href= el.get_absolute_url >" <-- Разницы нет -->        
+                    <a class="btn" href="{% url 'specific_product_url_with_slug' el.product.slug %}">
+                        <div class="fade-out-siblings">
+                            <div class="col">
+                                <div class="card shadow-sm">                                                                
+                                    <img src={{ el.product.image.url }} class="img-fluid" width="500px" height="500px">                                
+                                    <div class="card-body">
+                                        <h4 class="card-text">{{ el.product.title }}</h4>
+
+                                        <p class="card-text">Price : {{ el.product.get_string_price }}</p>
+                                        
+                                        <p class="card-text">Предсказание: {{ el.pred_obj.prediction }}</p>
+
+                                        <p class="card-text">{{ el.product.description }}</p>    
+                                        {% if el.product.amount == 0 %}
+                                            <p class="p-3 mb-2 bg-danger text-white">
+                                                Нет в наличии !
+                                            </p>                                    
+                                        {% endif %}
+                                    </div>                                
+                                </div>
+                            </div>
+                        </div>
+                    </a>            
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>                
+
+{% endblock %}

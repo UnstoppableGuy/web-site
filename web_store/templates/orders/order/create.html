@@ -1,0 +1,63 @@
+{% extends "./../../first_app/base.html" %}
+
+{% block header %}            
+    <p style="text-align: center;">
+        Your order creation/registraton page: 
+    </p>        
+{% endblock header %}
+
+{% block content %}
+
+    <style>
+        .order-info {
+            position: absolute;
+            right: 15%;
+            min-width: 30%;
+            border-bottom: solid rgb(149, 160, 255);
+            border-width: 5px;
+            background-color: rgb(226, 226, 226);            
+        }
+        .cost-discount {            
+            color: green;
+            padding-right: 200px;
+        }
+    </style>
+
+
+    <div class="order-info">
+        <h3>Your order:</h3>
+        <hr>
+        <ul>
+            {% for item in cart %}
+                <li>
+                    {{ item.quantity }}x {{ item.product.title }}
+                    <span>${{ item.total_price }}</span>
+                </li>
+            {% endfor %}
+            {% if cart.coupon %}
+                <li>
+                    "{{ cart.coupon.code }}" ({{ cart.coupon.discount }}% off)
+                    <span class="cost-discount">
+                        - ${{ cart.get_discount|floatformat:"2" }}
+                    </div>
+                </li>
+            {% endif %}
+            <li>
+                <span>Total: ${{ cart.get_total_price_after_discount|floatformat:"2" }}</span>
+            </li>
+        </ul>
+        <hr>
+    </div>
+    
+    <div>
+        Fill that information:
+        <hr>
+    </div>
+
+    <form action="." method="post" class="order-form">
+        {{ form.as_p }}
+        <p><input type="submit" value="Place order"></p>
+        {% csrf_token %}
+    </form>
+
+{% endblock content %}

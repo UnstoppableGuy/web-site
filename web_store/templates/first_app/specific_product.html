@@ -1,0 +1,84 @@
+{% extends "./base.html" %}
+
+{% block header %}   
+{% endblock %}
+
+{% block content %}
+
+    <style>
+        .product-main-block {
+            border-radius: 20px;
+            border: 1px solid rgb(153, 153, 153);
+            background-color: rgba(255,0,0,0.1);
+            min-height: 100px;
+            padding-bottom: 20px;
+        }
+        .product-left-block {
+            border-right: 1px solid rgb(133, 133, 133); 
+            min-height: 300px;
+        }        
+        .product-img-nice {
+            border: 1px solid rgb(0, 0, 0);
+            width: 250px; 
+            height: 200px;           
+        }
+        .product-img-nice:hover {
+            transition: transform .2s; /* Animation */
+            transform: scale(1.2);
+        }
+        .product-img-out {            
+            padding-top: 20px;
+            padding-left: 25px;            
+        }
+    </style>
+
+    <div class="container" style="padding-bottom: 25%;">
+        <div class="main-body">
+
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="main-breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href={% url 'about_us_url' %}>About us (Home)</a></li>
+                    <li class="breadcrumb-item"><a href={{ product.category.get_valid_url_for_products }}>{{ product.category.title }} (Category)</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ product.title }} (Product)</li>
+                </ol>
+            </nav>
+            <!-- /Breadcrumb -->
+
+            <div class="product-main-block">            
+                <div class="container">
+                    <div class="row">
+                        <div class="product-left-block">
+                            <div class="col-md-4">                            
+                                <div class="product-img-out">
+                                    <img src={{ product.image.url }} class="product-img-nice">                            
+                                </div>
+                            </div>
+                        </div>                        
+                        <div class="col-md-8">
+                            <h3>{{ product.title }}</h3>
+                            <p>Price : {{ product.get_string_price }}</p>
+                            <p>Amount : {{ product.amount }}</p>
+                            <p>Description : {{ product.description }}</p>
+                            {% if product.amount == 0 %}
+                                <p class="p-3 mb-2 bg-danger text-white">
+                                    Нет в наличии !
+                                </p>    
+                            {% else %} 
+                                <!-- Cart Buy stuff --------------------------------------------->                            
+                                <!--<a href="{% url 'buy_product_url_with_slug' product.slug %}"><button class="btn btn-outline-primary">Buy (купить) </button></a>-->
+                                <form action="{% url 'cart:cart_add' product.id %}" method="post">
+                                    {% csrf_token %}
+                                    {{ cart_product_form }}
+                                    <input type="submit" value="Add to cart">
+                                </form>                                                                                                                                              
+                            {% endif %}                                                     
+                        </div>                        
+                    </div>
+                </div>    
+            </div>
+        </div>
+    </div>
+    
+
+{% endblock %}
