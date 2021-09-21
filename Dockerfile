@@ -1,15 +1,16 @@
-FROM python:3
+FROM python:3.9.5-slim-buster
 
-ENV PYTHONUNBUFFERED=1
+WORKDIR /app
 
-WORKDIR /code
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-RUN apt update
+RUN apt-get update && apt-get install -y netcat
 
-RUN apt install -y netcat
+RUN pip install --upgrade pip
 
-COPY requirements.txt /code/
+COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY . /code/
+COPY . .

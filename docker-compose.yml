@@ -1,26 +1,40 @@
-version: "3.3"
+version: "3.7"
 
-services:
-  db:
-    image: postgres
-    volumes:
-      - ./data/db:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-  web:
-    build: .
-    command: bash -c "
-       chmod +x ./wait-for-it.sh && 
-       ./wait-for-it.sh &&              
-       python ./web_store/manage.py makemigrations &&
-       python ./web_store/manage.py migrate &&       
-       python ./web_store/manage.py loaddata ./web_store/web_store/fixtures/initial_data.json &&       
-       python ./web_store/manage.py runserver 0.0.0.0:8000"
-    volumes:
-      - .:/code
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
+services: 
+    db:
+        image: mysql:latest
+        volumes: 
+            - db_data:/var/lib/mysql
+        restart: always
+        container_name: db
+        environment:
+            MYSQL_ROOT_PASSWORD: 123
+            MYSQL_DATABASE: flask_app
+            MYSQL_USER: user
+            MYSQL_PASSWORD: pass
+
+    flask:
+        image: eisichenko/chat_app_flask:latest
+        container_name: flask
+        restart: always
+        command: gunicorn --worker-class eventlet -w 1 --bind ":8000" --log-level debug app:app
+        environment: 
+            - ENV=docker-compose
+        links: 
+            - redis
+            - db
+        ports:
+            - 5000:8000
+    redis:
+        image: redis
+    rq:
+        image: eisichenko/chat_app_flask:latest
+        command: python3 run-worker.py
+        environment: 
+            - ENV=rq
+        links: 
+            - redis
+            - flask
+
+volumes: 
+    db_data: {}

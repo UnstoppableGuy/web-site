@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home page
+{% endblock %}
+
+{% block body %}
+<div class="greet">
+    <p>Welcome, {{ username }}!</p>
+</div>
+
+<div class="search">
+    {% if message|length > 0 %}
+        <p class="{{ span_class }}">{{ message }}</p>
+    {% endif %}
+    <form autocomplete="off" method="POST">
+        <input maxlength="15" id="search_field" name="search_field" autocomplete="off" placeholder="Search users by username...">
+        <p id="find-verdict" class="invalid-find-name">Username was not found</p>
+        <div id="found-user-list" class="found-user-list"></div>
+        <button class="submit" id="find-button">Find</button>
+    </form>
+
+    {% if found_username|length > 0 %}
+
+        <div class="found-user">
+            <h2>Found user:</h2>
+
+            {% if is_online %}
+                <h3>Status: <span class="online">online</span></h3>
+            {% else %}
+                <h3>Status: <span class="offline">offline</span></h3>
+            {% endif %}
+
+            <h3 class="username">Username: {{ found_username }}</h3>
+
+            <a href="{{ url_for('social.start_chat', other_id=found_id) }}" class="start-chat">Start Chat</a>
+
+            {% if is_friend %}
+                <p class="already-friend">Already friend</p>
+            {% else %}
+                <a href="{{ url_for('social.add_friend', friend_id=found_id) }}" class="add-friend">Add Friend</a>
+            {% endif %}
+        </div>
+
+    {% endif %}
+</div>
+
+{% endblock %}

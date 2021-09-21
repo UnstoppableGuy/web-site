@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Login</title>
+    <link id="favicon" rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 110 100%22><text y=%22.9em%22 font-size=%2290%22>🍉</text></svg>">
+
+    <script defer src="https://code.jquery.com/jquery-3.6.0.min.js" 
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" 
+    crossorigin="anonymous"></script>
+
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"
+    integrity="sha512-eVL5Lb9al9FzgR63gDs1MxcDS2wFu3loYAgjIH0+Hg38tCS8Ag62dwKyH+wzDb+QauDpEZjXbMn11blw8cbTJQ=="
+    crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cambay">
+
+    <link rel="stylesheet" href="/static/css/login.css">
+    <script defer src="/static/js/validation.js"></script>
+</head>
+<body>
+    <div class="background">
+        <div class="box">
+            <h1>LOGIN</h1>
+            <p class="text-muted">Please enter your login and password!</p>
+
+            <form autocomplete="off" method="POST">
+                <p class="verdict {{ span_class }}" name="server_verdict">{{ message }}</p>
+
+                <input type="text" onkeyup="validate()" name="username" id="username" value="{{ prev_username }}" placeholder="Username" maxlength="15" required>
+                <p class="verdict" id="username_verdict"></p>
+
+                <input type="password" onkeyup="validate()" name="password" id="password" placeholder="Password" maxlength="80" required> 
+                <p class="verdict" id="password_verdict"></p>
+
+                <a class="signup" href="{{ url_for('users.signup') }}">Sign Up if you don't have an account</a>
+
+                <button class="submit" id="submit">Login</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
