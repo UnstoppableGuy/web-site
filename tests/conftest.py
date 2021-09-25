@@ -1,49 +1,50 @@
 import pytest
-from .data import *
-from project import *
-from project.models import *
+from django.contrib.auth import get_user_model
+
+from cart.models import Cart
+from users.models import User, UserProfile
+from products.models import Product, Category
 
 
-test_app = create_app("config.TestingConfig")
-test_app.app_context().push()
+@pytest.fixture
+def user_data(db):
+    user = User.objects.create(email='test@gmail.com', login="test_user", password="test_password")
+    return user
 
 
-@pytest.fixture(scope='session', autouse=True)
-def init_db():
-    db.drop_all()
-    db.create_all()
-        
-    for data in user_data:
-        new_test_user = User(username=data[0], password=data[1])
-        db.session.add(new_test_user)
+@pytest.fixture
+def user_cart_data(db):
+    user = User.objects.create(email='test@gmail.com', login="test_user", password="test_password")
+    Cart.objects.create(user=user)
 
-    db.session.commit()
+    return user
 
 
-@pytest.fixture()
-def flask_test_client():
-    with test_app.test_client() as test_client:
-        with test_app.app_context():
-            yield test_client
+@pytest.fixture
+def user_cart_product_data(db):
+    user = User.objects.create(email='test@gmail.com', login="test_user", password="test_password")
+    cart = Cart.objects.create(user=user)
+
+    return user
+
+@pytest.fixture
+def user_profile_data(db):
+    user = User.objects.create(email='test@gmail.com', login="test_user", password="test_password")
+    user_profile = UserProfile.objects.create(user=user, address='test', first_name='test', last_name='test',
+                                              phone_number='test')
+    return user_profile
 
 
-@pytest.fixture()
-def socketio_test_client(flask_test_client):
-    with test_app.app_context():
-        yield socketio.test_client(test_app, flask_test_client=flask_test_client)
+@pytest.fixture
+def product_data(db):
+    category = Category.objects.create(name='test_category', slug='test')
+    product = Product.objects.create(name="test_product", slug='test', category=category, image='test',
+                                     description='test', price=0)
+    return product
 
 
-def signup(flask_test_client, username, password):
-    return flask_test_client.post('/signup', data={'username': username,
-                                        'password': password}, 
-                       follow_redirects=True)
+@pytest.fixture
+def category_data(db):
+    category = Category.objects.create(name='test_category', slug='test')
 
-
-def login(flask_test_client, username, password):
-    return flask_test_client.post('/login', data={'username': username,
-                                       'password': password}, 
-                       follow_redirects=True)
-
-
-def logout(flask_test_client):
-    return flask_test_client.get('/logout', follow_redirects=True)
+    return category
